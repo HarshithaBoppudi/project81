@@ -4,11 +4,13 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import Story from '../screens/CreatePost'
 import Feed from '../screens/Feed'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
- 
+import { RFValue } from 'react-native-responsive-fontsize';
 const Tab=createBottomTabNavigator()
  const BottomTabNavigator=()=>{
 return(
     <Tab.Navigator
+    labeled={false}
+    barStyle={styles.bottonTabStyle}
     screenOptions={({route})=>(
         {
             tabBarIcon:({focused,color,size})=>{
@@ -20,11 +22,12 @@ return(
                 else if(route.name==='CreatePost'){
                     iconName=focused?'create':'create-outline'
                 }
-                return <Ionicons name={iconName} size={size} color={color}/>
+                return <Ionicons name={iconName} size={RFValue(25)} color={color} style={styles.icon}/>
             }
         }
     )}
-    tabBarOptions={{activeTintColor:'tomato',inactiveTintColor:'grey'}}
+    activeColor={'tomato'}
+    inactiveColor={'grey'}
     >
         <Tab.Screen name='Feed' component={Feed}/>
         <Tab.Screen name='CreatePost' component={Story}/>
@@ -33,3 +36,20 @@ return(
 )
 }
 export default BottomTabNavigator
+
+const styles=StyleSheet.create={
+    bottonTabStyle:{
+        backgroundColor:'#254377',
+        height:'5%',
+        borderTopLeftRadius:30,
+        borderTopRightRadius:30,
+        overflow:'Hidden',
+        position:'absolute'
+    },
+    icon:{
+        width:RFValue(30),
+        height:RFValue(30),
+
+
+    }
+}
