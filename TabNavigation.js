@@ -1,11 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import Story from '../screens/CreatePost'
+import CreatePost from '../screens/CreatePost'
 import Feed from '../screens/Feed'
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import { RFValue } from 'react-native-responsive-fontsize';
-const Tab=createBottomTabNavigator()
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+const Tab=createMaterialBottomTabNavigator()
  const BottomTabNavigator=()=>{
 return(
     <Tab.Navigator
@@ -16,11 +16,11 @@ return(
             tabBarIcon:({focused,color,size})=>{
                 let iconName
                 if(route.name==='Feed'){
-                    iconName=focused?'book':'book-outline'
+                    iconName=focused?'home':'home-outline'
                     
                 }
                 else if(route.name==='CreatePost'){
-                    iconName=focused?'create':'create-outline'
+                    iconName=focused?'add-circle':'add-circle-outline'
                 }
                 return <Ionicons name={iconName} size={RFValue(25)} color={color} style={styles.icon}/>
             }
@@ -28,9 +28,10 @@ return(
     )}
     activeColor={'tomato'}
     inactiveColor={'grey'}
+    
     >
         <Tab.Screen name='Feed' component={Feed}/>
-        <Tab.Screen name='CreatePost' component={Story}/>
+        <Tab.Screen name='CreatePost' component={CreatePost}/>
 
     </Tab.Navigator>
 )

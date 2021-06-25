@@ -114,7 +114,7 @@ const styles=StyleSheet.create({
         height:RFValue(40),
         justifyContent:'center',
         alignItems:'center',
-        backgroundColor:'pink',
+        backgroundColor:'#e51243',
         flexDirection:'row',
         borderRadius:RFValue(30),
 
