@@ -1,16 +1,61 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import CreatePost from '../screens/CreatePost'
+import Post from '../screens/Post'
 import Feed from '../screens/Feed'
 import { RFValue } from 'react-native-responsive-fontsize';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import firebase  from 'firebase';
 const Tab=createMaterialBottomTabNavigator()
- const BottomTabNavigator=()=>{
+ export default class BottomTabNavigator extends React.Component{
+     constructor(){
+         super()
+         this.state={
+             lightTheme:true,
+             isUpdated:false
+         }
+     }
+ renderFeed=(props)=>{
+return(
+    <Feed setUpdateToFalse={this.removeUpdated} {...props}/>
+)
+ }  
+ 
+ renderPost=(props)=>{
+    return(
+        <Post setUpdateToTrue={this.changeUpdated} {...props}/>
+    )
+     }
+
+ changeUpdated=()=>{
+     this.setState({
+         isUpdated:true
+     })
+ }
+ removeUpdated=()=>{
+    this.setState({
+        isUpdated:false
+    })
+} 
+
+fetchUser=()=>{
+    let theme
+    firebase.database().ref('/users/'+firebase.auth().currentUser.uid).on('value',snapshot=>{
+      theme=snapshot.val().current_theme
+      this.setState({
+        lightTheme:theme==='light'?true:false
+      })
+    })
+  }
+componentDidMount(){
+this.fetchUser()
+}  
+render(){ 
+
 return(
     <Tab.Navigator
     labeled={false}
-    barStyle={styles.bottonTabStyle}
+    barStyle={this.state.lightTheme?styles.bottonTabStyleLight:styles.bottonTabStyle}
     screenOptions={({route})=>(
         {
             tabBarIcon:({focused,color,size})=>{
@@ -19,7 +64,7 @@ return(
                     iconName=focused?'home':'home-outline'
                     
                 }
-                else if(route.name==='CreatePost'){
+                else if(route.name==='Post'){
                     iconName=focused?'add-circle':'add-circle-outline'
                 }
                 return <Ionicons name={iconName} size={RFValue(25)} color={color} style={styles.icon}/>
@@ -30,13 +75,19 @@ return(
     inactiveColor={'grey'}
     
     >
-        <Tab.Screen name='Feed' component={Feed}/>
-        <Tab.Screen name='CreatePost' component={CreatePost}/>
+        <Tab.Screen name='Feed' component={this.renderFeed}
+        options={{unmountOnBlur:true}}
+        />
+
+        <Tab.Screen name='Post' component={this.renderPost}
+          options={{unmountOnBlur:true}}
+        />
 
     </Tab.Navigator>
 )
+    }
 }
-export default BottomTabNavigator
+
 
 const styles=StyleSheet.create({
     bottonTabStyle:{
@@ -44,7 +95,15 @@ const styles=StyleSheet.create({
         height:'5%',
         borderTopLeftRadius:30,
         borderTopRightRadius:30,
-        overflow:'Hidden',
+       
+        position:'absolute'
+    },
+    bottonTabStyleLight:{
+        backgroundColor:'white',
+        height:'5%',
+        borderTopLeftRadius:30,
+        borderTopRightRadius:30,
+       
         position:'absolute'
     },
     icon:{

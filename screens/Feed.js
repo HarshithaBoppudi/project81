@@ -15,8 +15,40 @@ export default class Feed extends React.Component {
   constructor(){
     super()
     this.state={
-      fontsLoded:false
+      fontsLoded:false,
+      lightTheme:true
     }
+  }
+  fetchUser=()=>{
+    let theme
+    firebase.database().ref('/users/'+firebase.auth().currentUser.uid).on('value',snapshot=>{
+      theme=snapshot.val().current_theme
+      this.setState({
+        lightTheme:theme==='light'?true:false
+      })
+    })
+  }
+
+  fetchStories=()=>{
+    firebase.database().ref('/posts/').on('value',snapshot=>{
+      let stories=[]
+      if(snapshot.val()){
+         Object.keys(snapshot.val()).forEach(function(key){
+           stories.push({
+             key:key,
+             value:snapshot.val()[key]
+           })
+         })
+      }
+      this.setState({
+        stories:stories
+      })
+      this.props.setUpdateToFalse()
+    },
+    function(errorObject){
+      console.log('read feild'+errorObject.code)
+    }
+    )
   }
   async loadFonts(){
     await Font.loadAsync(costumFonts)
@@ -26,6 +58,8 @@ export default class Feed extends React.Component {
   }
   componentDidMount(){
     this.loadFonts()
+    this.fetchStories()
+    this.fetchUser()
   }
 
   keyExtractor=(item,index)=>{

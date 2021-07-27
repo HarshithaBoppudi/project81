@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack'
 import TabNavigator from './TabNavigation'
-import CratePost from '../screens/CreatePost'
+
 import CreatePost from '../screens/CreatePost';
 
 const Stack=createStackNavigator()
